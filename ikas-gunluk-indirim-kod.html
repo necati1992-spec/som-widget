@@ -1,0 +1,514 @@
+<!-- ============================================================
+     SHİNE OF MAGİC JEWELRY — GÜNLÜK İNDİRİM WİDGET'I
+     İkas Tema Editörü → Özel Kod Bloğu'na yapıştırın
+     ============================================================ -->
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ── WIDGET CONTAINER ── */
+.som-widget {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 0 28px 72px;
+  font-family: 'Raleway', sans-serif;
+}
+
+/* ── BAŞLIK ── */
+.som-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding-top: 72px;
+  border-top: 1px solid #E6E1D8;
+}
+.som-head-left .som-lbl {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #B8942A;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.som-head-left .som-ttl {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: #18140F;
+  line-height: 1.1;
+}
+.som-head-left .som-ttl em { font-style: italic; }
+
+/* Geri Sayım */
+.som-countdown {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #18140F;
+  padding: 12px 20px;
+  margin-bottom: 6px;
+}
+.som-cd-block { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.som-cd-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #EDD88A;
+  line-height: 1;
+  min-width: 38px;
+  text-align: center;
+}
+.som-cd-lbl {
+  font-size: 7px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  font-weight: 500;
+}
+.som-cd-sep {
+  color: rgba(255,255,255,0.25);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+/* ── ÜRÜN GRID ── */
+.som-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  background: #E6E1D8;
+}
+
+/* ── ÜRÜN KARTI ── */
+.som-card {
+  background: #fff;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s;
+}
+.som-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.1); z-index: 2; position: relative; }
+
+/* Görsel */
+.som-img {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  position: relative;
+  background: #F4F1EB;
+}
+.som-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+.som-card:hover .som-img img { transform: scale(1.06); }
+
+/* İndirim rozeti */
+.som-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #C0392B;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 4px 9px;
+  z-index: 3;
+  font-family: 'Raleway', sans-serif;
+}
+
+/* Stok uyarısı */
+.som-stock-warn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(192, 57, 43, 0.88);
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 5px;
+  font-weight: 600;
+  font-family: 'Raleway', sans-serif;
+}
+
+/* Sepete ekle — hover'da görünür */
+.som-add-btn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #18140F;
+  color: rgba(255,255,255,0.88);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 11px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 600;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s;
+  z-index: 4;
+}
+.som-card:hover .som-add-btn { transform: translateY(0); }
+.som-add-btn:hover { background: #B8942A; }
+.som-add-btn.som-added { background: #B8942A !important; transform: translateY(0) !important; }
+
+/* Bilgi alanı */
+.som-info {
+  padding: 13px 14px 16px;
+}
+.som-cat {
+  font-size: 8.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #9A9288;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+.som-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #18140F;
+  line-height: 1.25;
+  margin-bottom: 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.som-prices { display: flex; align-items: center; gap: 8px; }
+.som-old {
+  font-size: 11px;
+  color: #9A9288;
+  text-decoration: line-through;
+  font-weight: 300;
+}
+.som-new {
+  font-size: 16px;
+  color: #18140F;
+  font-weight: 600;
+  line-height: 1;
+}
+.som-save {
+  font-size: 9px;
+  color: #B8942A;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-left: auto;
+}
+
+/* Stok bar */
+.som-stock-bar-wrap {
+  height: 2px;
+  background: #F4F1EB;
+  margin-top: 10px;
+}
+.som-stock-bar {
+  height: 100%;
+  background: #B8942A;
+  transition: width 0.6s ease;
+}
+
+/* ── ALT ÇUBUK ── */
+.som-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #E6E1D8;
+}
+.som-footer-note {
+  font-size: 11px;
+  color: #9A9288;
+  letter-spacing: 0.3px;
+}
+.som-footer-note b { color: #B8942A; font-weight: 600; }
+.som-footer-cta {
+  background: #B8942A;
+  color: #fff;
+  padding: 10px 24px;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 600;
+  transition: background 0.2s;
+  display: inline-block;
+}
+.som-footer-cta:hover { background: #D4AC48; }
+
+/* Toast */
+.som-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #18140F;
+  color: #EDD88A;
+  padding: 13px 22px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 500;
+  z-index: 99999;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  border-left: 3px solid #B8942A;
+}
+.som-toast.som-show { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .som-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 840px) {
+  .som-grid { grid-template-columns: repeat(3, 1fr); }
+  .som-head { flex-direction: column; align-items: flex-start; gap: 16px; }
+}
+@media (max-width: 600px) {
+  .som-widget { padding: 0 16px 56px; }
+  .som-grid { grid-template-columns: repeat(2, 1fr); }
+  .som-head-left .som-ttl { font-size: 28px; }
+  .som-countdown { padding: 10px 16px; }
+  .som-cd-num { font-size: 22px; }
+}
+</style>
+
+<!-- ── HTML ── -->
+<div class="som-widget">
+
+  <!-- Başlık + Geri Sayım -->
+  <div class="som-head">
+    <div class="som-head-left">
+      <div class="som-lbl">Bugüne Özel Fırsatlar</div>
+      <div class="som-ttl">Günün <em>İndirimleri</em></div>
+    </div>
+    <div class="som-countdown">
+      <div class="som-cd-block">
+        <div class="som-cd-num" id="som-h">00</div>
+        <div class="som-cd-lbl">Saat</div>
+      </div>
+      <div class="som-cd-sep">:</div>
+      <div class="som-cd-block">
+        <div class="som-cd-num" id="som-m">00</div>
+        <div class="som-cd-lbl">Dakika</div>
+      </div>
+      <div class="som-cd-sep">:</div>
+      <div class="som-cd-block">
+        <div class="som-cd-num" id="som-s">00</div>
+        <div class="som-cd-lbl">Saniye</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ürün Grid -->
+  <div class="som-grid" id="som-grid"></div>
+
+  <!-- Alt Bar -->
+  <div class="som-footer">
+    <div class="som-footer-note">
+      ⏰ Fırsatlar <b id="som-endtime">gece yarısı</b> sona eriyor
+    </div>
+    <a href="/tum-urunler" class="som-footer-cta">Tüm Ürünleri Gör →</a>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="som-toast" id="som-toast"></div>
+
+<script>
+(function() {
+
+  /* ══════════════════════════════════════════════
+     ÜRÜN LİSTESİ — BURADAN DÜZENLEYİN
+     
+     Her ürün için:
+     - name      : Ürün adı
+     - category  : Kategori (Kolye, Küpe, Bileklik...)
+     - image     : Ürün görseli URL'i
+     - price     : Orijinal fiyat (TL)
+     - discount  : İndirim yüzdesi (örn: 30 = %30)
+     - stock     : Mevcut stok adedi
+     - url       : Ürün sayfası URL'i (/ ile başlayan)
+     ══════════════════════════════════════════════ */
+  var PRODUCTS = [
+    {
+      name: "Valenor Necklace",
+      category: "Çelik Kolye",
+      image: "https://cdn.myikas.com/images/e99bb7c7-ddb7-4c1a-8d7e-29d9cfe8fbd2/5728be8d-100c-4454-93c2-d77787896eea/3840/tan0107015-psb.webp",
+      price: 649,
+      discount: 30,
+      stock: 4,
+      url: "/valenor-necklace-celik-kolye"
+    },
+    {
+      name: "Zerlyn Earring",
+      category: "Çelik Küpe",
+      image: "https://cdn.myikas.com/images/e99bb7c7-ddb7-4c1a-8d7e-29d9cfe8fbd2/609e146f-82cd-4adb-9c01-90162a612ed6/3840/tae0107041a.webp",
+      price: 499,
+      discount: 25,
+      stock: 7,
+      url: "/zerlyn-earring-celik-kupe"
+    },
+    {
+      name: "Freja Bracelet",
+      category: "Çelik Bileklik",
+      image: "https://cdn.myikas.com/images/e99bb7c7-ddb7-4c1a-8d7e-29d9cfe8fbd2/23f1b94e-662f-4171-b7e4-af013ac78de7/3840/tab32789b.webp",
+      price: 449,
+      discount: 20,
+      stock: 12,
+      url: "/freja-bracelet-celik-bileklik"
+    },
+    {
+      name: "Butrie Ring",
+      category: "Silver Yüzük",
+      image: "https://cdn.myikas.com/images/e99bb7c7-ddb7-4c1a-8d7e-29d9cfe8fbd2/a7036353-3c75-4bac-b76a-d57cadd5659f/3840/ssr-214919c.webp",
+      price: 799,
+      discount: 35,
+      stock: 2,
+      url: "/butrie-ring-silver-yuzuk"
+    },
+    {
+      name: "Chios Bracelet",
+      category: "Doğal Taş Bileklik",
+      image: "https://cdn.myikas.com/images/e99bb7c7-ddb7-4c1a-8d7e-29d9cfe8fbd2/26fb426b-b1ef-4960-8ba3-6091e8722f30/3840/nab-xl0460-1b.webp",
+      price: 399,
+      discount: 15,
+      stock: 9,
+      url: "/chios-bracelet-dogal-tas-bileklik"
+    }
+  ];
+
+  /* ══════════════════════════════════════════════
+     AYARLAR
+     ══════════════════════════════════════════════ */
+  var LOW_STOCK = 5;   // Kaç adetten az ise "Son X ürün" uyarısı
+
+  /* ══════════════════════════════════════════════
+     GERİ SAYIM
+     ══════════════════════════════════════════════ */
+  function tick() {
+    var now  = new Date();
+    var end  = new Date(now);
+    end.setHours(23, 59, 59, 999);
+    var diff = end - now;
+    var h = Math.floor(diff / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('som-h').textContent = pad(h);
+    document.getElementById('som-m').textContent = pad(m);
+    document.getElementById('som-s').textContent = pad(s);
+    var et = document.getElementById('som-endtime');
+    if (et) et.textContent = '23:59\'da';
+  }
+  function pad(n) { return String(n).padStart(2,'0'); }
+  tick();
+  setInterval(tick, 1000);
+
+  /* ══════════════════════════════════════════════
+     ÜRÜN KARTLARINI OLUŞTUR
+     ══════════════════════════════════════════════ */
+  function calcNew(price, disc) {
+    return Math.round(price * (1 - disc / 100));
+  }
+  function fmtPrice(n) {
+    return n.toLocaleString('tr-TR') + ' ₺';
+  }
+
+  function render() {
+    var grid = document.getElementById('som-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    PRODUCTS.forEach(function(p, i) {
+      var newPrice  = calcNew(p.price, p.discount);
+      var save      = p.price - newPrice;
+      var isLow     = p.stock <= LOW_STOCK;
+      var barW      = Math.min(100, Math.round((p.stock / 20) * 100));
+
+      var card = document.createElement('div');
+      card.className = 'som-card';
+
+      card.innerHTML =
+        '<div class="som-img">' +
+          '<img src="' + p.image + '" alt="' + p.name + '" loading="lazy">' +
+          '<div class="som-badge">-%' + p.discount + '</div>' +
+          (isLow ? '<div class="som-stock-warn">⚠ Son ' + p.stock + ' ürün!</div>' : '') +
+          '<button class="som-add-btn" data-idx="' + i + '">Sepete Ekle</button>' +
+        '</div>' +
+        '<div class="som-info">' +
+          '<div class="som-cat">' + p.category + '</div>' +
+          '<div class="som-name">' + p.name + '</div>' +
+          '<div class="som-prices">' +
+            '<span class="som-old">' + fmtPrice(p.price) + '</span>' +
+            '<span class="som-new">' + fmtPrice(newPrice) + '</span>' +
+            '<span class="som-save">-' + fmtPrice(save) + '</span>' +
+          '</div>' +
+          '<div class="som-stock-bar-wrap">' +
+            '<div class="som-stock-bar" style="width:' + barW + '%"></div>' +
+          '</div>' +
+        '</div>';
+
+      // Karta tıklayınca ürün sayfasına git
+      card.addEventListener('click', function(e) {
+        if (e.target.classList.contains('som-add-btn')) return;
+        window.location.href = p.url;
+      });
+
+      // Sepete ekle butonu
+      var btn = card.querySelector('.som-add-btn');
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (btn.disabled) return;
+        btn.textContent = '✓ Eklendi';
+        btn.classList.add('som-added');
+        btn.disabled = true;
+        showToast('"' + p.name + '" sepete eklendi!');
+        setTimeout(function() {
+          btn.textContent = 'Sepete Ekle';
+          btn.classList.remove('som-added');
+          btn.disabled = false;
+        }, 3000);
+      });
+
+      grid.appendChild(card);
+    });
+  }
+
+  /* ══════════════════════════════════════════════
+     TOAST
+     ══════════════════════════════════════════════ */
+  function showToast(msg) {
+    var t = document.getElementById('som-toast');
+    if (!t) return;
+    t.textContent = '✓  ' + msg;
+    t.classList.add('som-show');
+    setTimeout(function() { t.classList.remove('som-show'); }, 3000);
+  }
+
+  /* ══════════════════════════════════════════════
+     BAŞLAT
+     ══════════════════════════════════════════════ */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', render);
+  } else {
+    render();
+  }
+
+})();
+</script>

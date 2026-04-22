@@ -9,8 +9,6 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;font-family:'Jost',sans-serif;color:#111;min-height:100vh}
 .w{max-width:1200px;margin:0 auto;padding:40px 24px 48px}
- 
-/* Başlık + geri sayım */
 .top-row{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid #e8e8e8;padding-bottom:20px;margin-bottom:28px;gap:16px;flex-wrap:wrap}
 .eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#888;margin-bottom:6px}
 .title-block h2{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:400;line-height:1.1;color:#111}
@@ -20,14 +18,10 @@ html,body{background:#fff;font-family:'Jost',sans-serif;color:#111;min-height:10
 .cd-num{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:#111;line-height:1;min-width:42px;text-align:center;border-bottom:1px solid #ddd;padding-bottom:3px}
 .cd-lbl{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#aaa}
 .cd-sep{font-size:24px;color:#ccc;margin:0 2px 14px;font-family:'Cormorant Garamond',serif}
- 
-/* Grid */
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#e8e8e8;min-height:320px}
 .state-box{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;background:#fff;gap:14px;color:#999;font-size:13px}
 .spinner{width:28px;height:28px;border:1px solid #ddd;border-top-color:#111;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
- 
-/* Kart */
 .card{background:#fff;cursor:pointer;position:relative;overflow:hidden}
 .card:hover{box-shadow:0 4px 24px rgba(0,0,0,.09);z-index:2;position:relative}
 .card-img{position:relative;aspect-ratio:1/1;overflow:hidden;background:#f8f8f6}
@@ -43,20 +37,15 @@ html,body{background:#fff;font-family:'Jost',sans-serif;color:#111;min-height:10
 .card-prices{display:flex;align-items:baseline;gap:8px}
 .price-old{font-size:11px;color:#bbb;text-decoration:line-through;font-weight:300}
 .price-new{font-size:14px;color:#111;font-weight:400}
- 
-/* Alt bar */
 .footer-bar{display:flex;align-items:center;justify-content:space-between;margin-top:20px;padding-top:16px;border-top:1px solid #e8e8e8;gap:12px;flex-wrap:wrap}
 .footer-note{font-size:11px;color:#999}
 .footer-note b{color:#111;font-weight:500}
-.footer-cta{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#111;text-decoration:none;border-bottom:1px solid #111;padding-bottom:2px;transition:color .2s,border-color .2s;white-space:nowrap}
+.footer-cta{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#111;text-decoration:none;border-bottom:1px solid #111;padding-bottom:2px;transition:color .2s;white-space:nowrap}
 .footer-cta:hover{color:#888;border-color:#888}
- 
-/* Toast */
-.toast{position:fixed;bottom:20px;right:20px;background:#111;color:#fff;padding:11px 18px;font-size:11px;letter-spacing:.8px;font-family:'Jost',sans-serif;z-index:99999;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;pointer-events:none}
+.toast{position:fixed;bottom:20px;right:20px;background:#111;color:#fff;padding:11px 18px;font-size:11px;font-family:'Jost',sans-serif;z-index:99999;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0)}
- 
 @media(max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:640px){.w{padding:28px 16px 36px}.grid{grid-template-columns:repeat(2,1fr)}.top-row{flex-direction:column;align-items:flex-start}.cd-num{font-size:26px;min-width:34px}}
+@media(max-width:640px){.w{padding:28px 16px 36px}.grid{grid-template-columns:repeat(2,1fr)}.top-row{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -87,6 +76,12 @@ html,body{background:#fff;font-family:'Jost',sans-serif;color:#111;min-height:10
 <div class="toast" id="toast"></div>
  
 <script>
+/* ══════════════════════════════════════════
+   WORKER URL — Cloudflare deploy sonrası
+   buraya kendi URL'inizi yazın
+   ══════════════════════════════════════════ */
+var WORKER_URL = 'https://shineofmagic-worker.necatiaktay1992.workers.dev';
+ 
 /* ── Geri sayım ── */
 function tick(){
   var now=new Date(),end=new Date(now);
@@ -98,114 +93,22 @@ function tick(){
 }
 function p(n){return String(n).padStart(2,'0')}
 tick();setInterval(tick,1000);
- 
 function fmt(n){return n.toLocaleString('tr-TR')+' ₺'}
- 
-/* ── CORS proxy listesi — sırayla dener ── */
-var PROXIES = [
-  function(url){return 'https://corsproxy.io/?'+encodeURIComponent(url)},
-  function(url){return 'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(url)},
-  function(url){return 'https://api.allorigins.win/raw?url='+encodeURIComponent(url)}
-];
- 
-async function fetchWithProxy(targetUrl, proxyIndex){
-  proxyIndex = proxyIndex || 0;
-  if(proxyIndex >= PROXIES.length) throw new Error('Tüm proxy\'ler başarısız');
-  try {
-    var proxyUrl = PROXIES[proxyIndex](targetUrl);
-    var res = await fetch(proxyUrl, {signal: AbortSignal.timeout(8000)});
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    return await res.text();
-  } catch(e) {
-    console.warn('Proxy '+proxyIndex+' başarısız:', e.message, '— sonraki deneniyor');
-    return fetchWithProxy(targetUrl, proxyIndex+1);
-  }
-}
- 
-/* ── HTML parse et → indirimli ürünleri çıkar ── */
-function parseProducts(html){
-  var doc = new DOMParser().parseFromString(html,'text/html');
-  var results = [];
-  var seen = {};
- 
-  /* İkas ürün kartlarını bul — ürün slug'ı olan tüm linkleri tara */
-  var links = Array.from(doc.querySelectorAll('a'));
- 
-  links.forEach(function(a){
-    var href = a.getAttribute('href')||'';
-    /* Sadece ürün sayfaları */
-    if(!href.includes('shineofmagic.com/')) return;
-    /* Kategori/sistem sayfalarını atla */
-    var skip = ['/tum-urunler','/kadin-','/erkek-','/gumus-','/sahmeran',
-                '/sommos','/shine-of-stones','/glamour','/silver-',
-                '/pages','/account','/blog','/cart','sortBy'];
-    if(skip.some(function(s){return href.includes(s)})) return;
-    if(seen[href]) return;
- 
-    /* Ürün görseli — CDN UUID formatı */
-    var img = a.querySelector('img[src*="/e99bb7c7-"]');
-    if(!img) return;
-    var imgSrc = img.getAttribute('src')||'';
-    if(!imgSrc || imgSrc.includes('base64') || imgSrc.includes('theme-images')) return;
-    imgSrc = imgSrc.replace('/3840/','/600/');
- 
-    /* İsim */
-    var nameEl = a.querySelector('h2,h3,.product-name,[class*="name"]');
-    if(!nameEl) return;
-    var name = nameEl.textContent.trim().replace(/^Shine of Magic Jewelry\s*/i,'').trim();
-    if(!name || name.length < 3) return;
- 
-    /* Fiyatlar: TL içeren sayıları topla */
-    var text = a.textContent;
-    var nums = [];
-    var re = /([\d]+[.,]?[\d]*)\s*TL/g;
-    var m;
-    while((m=re.exec(text))!==null){
-      var n = parseFloat(m[1].replace('.','').replace(',','.'));
-      if(!isNaN(n) && n>10) nums.push(n);
-    }
-    if(nums.length<2) return;
-    var orig=Math.max.apply(null,nums);
-    var disc=Math.min.apply(null,nums);
-    if(disc>=orig) return;
-    var pct=Math.round((1-disc/orig)*100);
-    if(pct<5||pct>90) return;
- 
-    /* Kategori */
-    var cat='Takı';
-    var slug=href+name;
-    if(/kolye|necklace/i.test(slug)) cat='Çelik Kolye';
-    else if(/küpe|earring/i.test(slug)) cat='Çelik Küpe';
-    else if(/bileklik|bracelet/i.test(slug)) cat='Çelik Bileklik';
-    else if(/yüzük|ring/i.test(slug)) cat='Çelik Yüzük';
-    else if(/şahmeran|shahmaran/i.test(slug)) cat='Şahmeran';
- 
-    seen[href]=true;
-    results.push({name,cat,img:imgSrc,orig,disc,pct,url:href});
-  });
- 
-  /* En yüksek indirimden sırala, ilk 4 */
-  results.sort(function(a,b){return b.pct-a.pct});
-  return results.slice(0,4);
-}
  
 /* ── Kartları ekrana bas ── */
 function renderCards(products){
   var grid=document.getElementById('grid');
   grid.innerHTML='';
- 
   if(!products||products.length===0){
     grid.innerHTML='<div class="state-box"><span>Şu an aktif indirimli ürün bulunamadı.</span></div>';
     return;
   }
- 
   products.forEach(function(u){
     var c=document.createElement('div');
     c.className='card';
     c.innerHTML=
       '<div class="card-img">'+
-        '<img src="'+u.img+'" alt="'+u.name+'" loading="lazy" '+
-          'onerror="this.style.opacity=\'0\'">'+
+        '<img src="'+u.img+'" alt="'+u.name+'" loading="lazy">'+
         '<div class="badge">-%'+u.pct+'</div>'+
         '<button class="add-btn">Sepete Ekle</button>'+
       '</div>'+
@@ -217,12 +120,10 @@ function renderCards(products){
           '<span class="price-new">'+fmt(u.disc)+'</span>'+
         '</div>'+
       '</div>';
- 
     c.addEventListener('click',function(e){
       if(e.target.classList.contains('add-btn')) return;
       window.open(u.url,'_parent');
     });
- 
     var btn=c.querySelector('.add-btn');
     btn.addEventListener('click',function(e){
       e.stopPropagation();
@@ -230,14 +131,9 @@ function renderCards(products){
       btn.textContent='Eklendi ✓';
       btn.classList.add('added');
       btn.disabled=true;
-      showToast('"'+u.name+'" sepete eklendi');
-      setTimeout(function(){
-        btn.textContent='Sepete Ekle';
-        btn.classList.remove('added');
-        btn.disabled=false;
-      },3000);
+      showToast(u.name+' sepete eklendi');
+      setTimeout(function(){btn.textContent='Sepete Ekle';btn.classList.remove('added');btn.disabled=false},3000);
     });
- 
     grid.appendChild(c);
   });
 }
@@ -249,22 +145,15 @@ function showToast(msg){
   setTimeout(function(){t.classList.remove('show')},3000);
 }
  
-function showError(msg){
-  document.getElementById('grid').innerHTML=
-    '<div class="state-box"><span>'+msg+'</span></div>';
-}
- 
-/* ── Ana akış ── */
-var TARGET = 'https://shineofmagic.com/tum-urunler?sortBy=discountRate&sortDirection=DESC';
- 
-fetchWithProxy(TARGET)
-  .then(function(html){
-    var products = parseProducts(html);
-    renderCards(products);
+/* ── Worker'dan ürünleri çek ── */
+fetch(WORKER_URL)
+  .then(function(r){return r.json()})
+  .then(function(data){
+    if(data.ok) renderCards(data.products);
+    else document.getElementById('grid').innerHTML='<div class="state-box"><span>Hata: '+data.error+'</span></div>';
   })
-  .catch(function(err){
-    console.error(err);
-    showError('Ürünler yüklenemedi — sayfayı yenileyin.');
+  .catch(function(){
+    document.getElementById('grid').innerHTML='<div class="state-box"><span>Bağlantı hatası — sayfayı yenileyin.</span></div>';
   });
 </script>
 </body>

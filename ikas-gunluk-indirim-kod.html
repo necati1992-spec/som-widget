@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#fff;font-family:'Jost',sans-serif;color:#111;min-height:100vh}
+html,body{background:#fff;font-family:'Jost',sans-serif;color:#111}
 .w{max-width:1200px;margin:0 auto;padding:40px 24px 48px}
 .top-row{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid #e8e8e8;padding-bottom:20px;margin-bottom:28px;gap:16px;flex-wrap:wrap}
 .eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#888;margin-bottom:6px}
@@ -18,10 +18,7 @@ html,body{background:#fff;font-family:'Jost',sans-serif;color:#111;min-height:10
 .cd-num{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:#111;line-height:1;min-width:42px;text-align:center;border-bottom:1px solid #ddd;padding-bottom:3px}
 .cd-lbl{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#aaa}
 .cd-sep{font-size:24px;color:#ccc;margin:0 2px 14px;font-family:'Cormorant Garamond',serif}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#e8e8e8;min-height:320px}
-.state-box{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;background:#fff;gap:14px;color:#999;font-size:13px}
-.spinner{width:28px;height:28px;border:1px solid #ddd;border-top-color:#111;border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#e8e8e8}
 .card{background:#fff;cursor:pointer;position:relative;overflow:hidden}
 .card:hover{box-shadow:0 4px 24px rgba(0,0,0,.09);z-index:2;position:relative}
 .card-img{position:relative;aspect-ratio:1/1;overflow:hidden;background:#f8f8f6}
@@ -41,7 +38,7 @@ html,body{background:#fff;font-family:'Jost',sans-serif;color:#111;min-height:10
 .footer-note{font-size:11px;color:#999}
 .footer-note b{color:#111;font-weight:500}
 .footer-cta{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#111;text-decoration:none;border-bottom:1px solid #111;padding-bottom:2px;transition:color .2s;white-space:nowrap}
-.footer-cta:hover{color:#888;border-color:#888}
+.footer-cta:hover{color:#888}
 .toast{position:fixed;bottom:20px;right:20px;background:#111;color:#fff;padding:11px 18px;font-size:11px;font-family:'Jost',sans-serif;z-index:99999;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0)}
 @media(max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
@@ -63,11 +60,7 @@ html,body{background:#fff;font-family:'Jost',sans-serif;color:#111;min-height:10
       <div class="cd-unit"><div class="cd-num" id="cdS">00</div><div class="cd-lbl">Saniye</div></div>
     </div>
   </div>
- 
-  <div class="grid" id="grid">
-    <div class="state-box"><div class="spinner"></div><span>Yükleniyor...</span></div>
-  </div>
- 
+  <div class="grid" id="grid"></div>
   <div class="footer-bar">
     <div class="footer-note">Fırsatlar <b>23:59</b>'da sona eriyor</div>
     <a href="https://shineofmagic.com/tum-urunler" class="footer-cta" target="_parent">Tüm Ürünleri Gör →</a>
@@ -76,11 +69,52 @@ html,body{background:#fff;font-family:'Jost',sans-serif;color:#111;min-height:10
 <div class="toast" id="toast"></div>
  
 <script>
-/* ══════════════════════════════════════════
-   WORKER URL — Cloudflare deploy sonrası
-   buraya kendi URL'inizi yazın
-   ══════════════════════════════════════════ */
-var WORKER_URL = 'https://shineofmagic-worker.necatiaktay1992.workers.dev';
+/* ╔═══════════════════════════════════════════════════════╗
+   ║  GÜNLÜK İNDİRİM ÜRÜNLERİ — BURADAN DÜZENLEYİN      ║
+   ║                                                       ║
+   ║  Her ürün için:                                       ║
+   ║  • name  → Ürün adı (kısa tutun)                     ║
+   ║  • cat   → Kategori                                   ║
+   ║  • img   → Görsel URL (İkas CDN'den kopyalayın)      ║
+   ║  • orig  → Orijinal fiyat (₺)                        ║
+   ║  • disc  → İndirimli fiyat (₺)                       ║
+   ║  • url   → Ürün sayfası linki                        ║
+   ╚═══════════════════════════════════════════════════════╝ */
+ 
+var URUNLER = [
+  {
+    name: "Valenor Necklace",
+    cat: "Çelik Kolye",
+    img: "https://cdn.myikas.com/images/e99bb7c7-ddb7-4c1a-8d7e-29d9cfe8fbd2/5728be8d-100c-4454-93c2-d77787896eea/800/tan0107015-psb.webp",
+    orig: 649,
+    disc: 454,
+    url: "https://shineofmagic.com/valenor-necklace-celik-kolye"
+  },
+  {
+    name: "Zerlyn Earring",
+    cat: "Çelik Küpe",
+    img: "https://cdn.myikas.com/images/e99bb7c7-ddb7-4c1a-8d7e-29d9cfe8fbd2/609e146f-82cd-4adb-9c01-90162a612ed6/800/tae0107041a.webp",
+    orig: 499,
+    disc: 374,
+    url: "https://shineofmagic.com/zerlyn-earring-celik-kupe"
+  },
+  {
+    name: "Freja Bracelet",
+    cat: "Çelik Bileklik",
+    img: "https://cdn.myikas.com/images/e99bb7c7-ddb7-4c1a-8d7e-29d9cfe8fbd2/23f1b94e-662f-4171-b7e4-af013ac78de7/800/tab32789b.webp",
+    orig: 449,
+    disc: 359,
+    url: "https://shineofmagic.com/freja-bracelet-celik-bileklik"
+  },
+  {
+    name: "Butrie Ring",
+    cat: "Silver Yüzük",
+    img: "https://cdn.myikas.com/images/e99bb7c7-ddb7-4c1a-8d7e-29d9cfe8fbd2/a7036353-3c75-4bac-b76a-d57cadd5659f/800/ssr-214919c.webp",
+    orig: 799,
+    disc: 519,
+    url: "https://shineofmagic.com/butrie-ring-silver-yuzuk"
+  }
+];
  
 /* ── Geri sayım ── */
 function tick(){
@@ -93,23 +127,20 @@ function tick(){
 }
 function p(n){return String(n).padStart(2,'0')}
 tick();setInterval(tick,1000);
+ 
 function fmt(n){return n.toLocaleString('tr-TR')+' ₺'}
  
-/* ── Kartları ekrana bas ── */
-function renderCards(products){
+/* ── Kartları oluştur ── */
+function render(){
   var grid=document.getElementById('grid');
-  grid.innerHTML='';
-  if(!products||products.length===0){
-    grid.innerHTML='<div class="state-box"><span>Şu an aktif indirimli ürün bulunamadı.</span></div>';
-    return;
-  }
-  products.forEach(function(u){
+  URUNLER.forEach(function(u){
+    var pct=Math.round((1-u.disc/u.orig)*100);
     var c=document.createElement('div');
     c.className='card';
     c.innerHTML=
       '<div class="card-img">'+
         '<img src="'+u.img+'" alt="'+u.name+'" loading="lazy">'+
-        '<div class="badge">-%'+u.pct+'</div>'+
+        '<div class="badge">-%'+pct+'</div>'+
         '<button class="add-btn">Sepete Ekle</button>'+
       '</div>'+
       '<div class="card-info">'+
@@ -132,7 +163,11 @@ function renderCards(products){
       btn.classList.add('added');
       btn.disabled=true;
       showToast(u.name+' sepete eklendi');
-      setTimeout(function(){btn.textContent='Sepete Ekle';btn.classList.remove('added');btn.disabled=false},3000);
+      setTimeout(function(){
+        btn.textContent='Sepete Ekle';
+        btn.classList.remove('added');
+        btn.disabled=false;
+      },3000);
     });
     grid.appendChild(c);
   });
@@ -145,16 +180,7 @@ function showToast(msg){
   setTimeout(function(){t.classList.remove('show')},3000);
 }
  
-/* ── Worker'dan ürünleri çek ── */
-fetch(WORKER_URL)
-  .then(function(r){return r.json()})
-  .then(function(data){
-    if(data.ok) renderCards(data.products);
-    else document.getElementById('grid').innerHTML='<div class="state-box"><span>Hata: '+data.error+'</span></div>';
-  })
-  .catch(function(){
-    document.getElementById('grid').innerHTML='<div class="state-box"><span>Bağlantı hatası — sayfayı yenileyin.</span></div>';
-  });
+render();
 </script>
 </body>
 </html>
